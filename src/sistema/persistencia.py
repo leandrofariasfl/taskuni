@@ -2,8 +2,16 @@ import json
 import os
 
 
+RAIZ_PROJETO = os.path.dirname(
+    os.path.dirname(
+        os.path.dirname(
+            os.path.abspath(__file__)
+        )
+    )
+)
+
 CAMINHO_DADOS = os.path.join(
-    os.path.dirname(os.path.abspath(__file__)),
+    RAIZ_PROJETO,
     "data",
     "taskuni.json"
 )

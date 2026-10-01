@@ -30,4 +30,5 @@ Desktop.ini
 *.log
 *.tmp
 
-GPT_PROJECT_MENTOR.md
+data/taskuni.json
+
