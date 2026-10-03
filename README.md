@@ -52,9 +52,26 @@ Antes de implementar uma funcionalidade, a equipe deve consultar esses documento
 
 ## Persistência
 
-Os dados serão mantidos em `data/taskuni.json`. Somente `persistencia.py` poderá conhecer os detalhes de leitura e escrita desse arquivo.
+Os dados são armazenados em arquivos JSON separados por entidade, na pasta `src/dados/`:
 
-Informações que podem ser calculadas, como média, tempo total, XP, nível e quantidade de tarefas atrasadas, não serão armazenadas no JSON.
+- `disciplinas.json`
+- `conteudos.json`
+- `tarefas.json`
+- `avaliacoes.json`
+- `sessoes_estudo.json`
+- `metas.json`
+
+A responsabilidade fica no pacote `src/persistencia/`:
+
+- `_armazenamento.py`: única parte que abre e grava arquivos. Oferece `carregar`, `gravar` e `proximo_id`. A gravação é atômica (arquivo temporário + `os.replace`). Se um arquivo estiver corrompido, ele é renomeado para `<nome>.corrompido.json` e a coleção começa vazia.
+- Um módulo por entidade (`disciplinas.py`, `conteudos.py`, `tarefas.py`, `avaliacoes.py`, `sessoes_estudo.py`, `metas.py`), cada um com `adicionar`, `listar`, `buscar`, `atualizar`, `remover` e `salvar`.
+
+Regras desta camada:
+
+- cada módulo manipula somente os próprios dados;
+- não há validação de relacionamentos entre entidades (por exemplo, se um `disciplina_id` existe); essa verificação pertence à camada de domínio;
+- o arquivo é salvo automaticamente após cada inclusão, alteração ou remoção;
+- informações calculadas, como média, tempo total, XP, nível e quantidade de tarefas atrasadas, não são armazenadas.
 
 ## Execução
 
