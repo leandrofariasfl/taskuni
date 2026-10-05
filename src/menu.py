@@ -7,17 +7,20 @@ para eles.
 """
 from .persistencia import disciplinas as disp
 from .persistencia import conteudos as cont
+from .menu_tarefas import menu_tarefas
 
 
 def executar():
     opcoes = {
         "1": menu_disciplinas,
         "2": menu_conteudos,
+        "3": menu_tarefas,
     }
     while True:
         print("\n=== TASKUNI ===")
         print("1 - Disciplinas")
         print("2 - Conteúdos")
+        print("3 - Tarefas")
         print("0 - Sair")
         escolha = input("Escolha uma opção: ").strip()
 
