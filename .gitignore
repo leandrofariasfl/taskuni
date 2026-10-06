@@ -30,5 +30,6 @@ Desktop.ini
 *.log
 *.tmp
 
-data/taskuni.json
+src/dados/conteudos.json
+src/dados/disciplinas.json
 
