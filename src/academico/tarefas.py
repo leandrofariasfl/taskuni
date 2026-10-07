@@ -2,6 +2,9 @@
 
 As operações que podem falhar devolvem (resultado, erros).
 """
+from ..persistencia import tarefas as repo_tarefas
+from ..persistencia import disciplinas as repo_disciplinas
+
 from datetime import datetime
 
 TIPOS = ("academica", "pessoal")
@@ -168,11 +171,24 @@ def filtrar_tarefas(tarefas, status=None, tipo=None, disciplina_id=None):
         resultado.append(tarefa)
     return resultado
 
-
 def _chave_prazo(tarefa):
     return (tarefa.get("prazo", ""), tarefa.get("id", 0))
-
 
 def ordenar_por_prazo(tarefas):
     """Ordena do prazo mais próximo para o mais distante."""
     return sorted(tarefas, key=_chave_prazo)
+
+def listar_todas():
+    return repo_tarefas.listar()
+
+def buscar_tarefa(tarefa_id):
+    return repo_tarefas.buscar(tarefa_id)
+
+def listar_disciplinas():
+    return repo_disciplinas.listar()
+
+def salvar_nova(tarefa):
+    return repo_tarefas.adicionar(**tarefa)
+
+def salvar_alteracoes(tarefa_id, campos):
+    return repo_tarefas.atualizar(tarefa_id, **campos)

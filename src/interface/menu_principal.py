@@ -1,6 +1,9 @@
+"""Menu principal do TASKUNI."""
+
 from .menu_disciplinas import menu_disciplinas
 from .menu_conteudos import menu_conteudos
 from .menu_tarefas import menu_tarefas
+
 
 def executar():
     opcoes = {
@@ -8,12 +11,14 @@ def executar():
         "2": menu_conteudos,
         "3": menu_tarefas,
     }
+
     while True:
         print("\n=== TASKUNI ===")
         print("1 - Disciplinas")
         print("2 - Conteúdos")
         print("3 - Tarefas")
         print("0 - Sair")
+
         escolha = input("Escolha uma opção: ").strip()
 
         if escolha == "0":
@@ -21,7 +26,9 @@ def executar():
             break
 
         acao = opcoes.get(escolha)
+
         if acao is None:
             print("Opção inválida.")
             continue
+
         acao()

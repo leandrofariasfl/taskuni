@@ -172,4 +172,5 @@ pyrightconfig.json
 
 src/dados/conteudos.json
 src/dados/disciplinas.json
+src/dados/tarefas.json
 

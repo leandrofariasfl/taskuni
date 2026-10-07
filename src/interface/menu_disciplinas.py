@@ -1,5 +1,22 @@
-from ..academico import disciplinas as dis
-from ..persistencia import disciplinas as disp
+"""Interface de terminal para disciplinas."""
+
+from ..academico import disciplinas as dominio
+
+
+def _ler_id(pergunta):
+    texto = input(pergunta).strip()
+
+    if not texto.isdigit():
+        print("ID inválido.")
+        return None
+
+    return int(texto)
+
+
+def _mostrar_erros(erros):
+    for erro in erros:
+        print(" -", erro)
+
 
 def menu_disciplinas():
     opcoes = {
@@ -8,6 +25,7 @@ def menu_disciplinas():
         "3": atualizar_disciplina,
         "4": remover_disciplina,
     }
+
     while True:
         print("\n--- Disciplinas ---")
         print("1 - Adicionar")
@@ -15,57 +33,79 @@ def menu_disciplinas():
         print("3 - Atualizar")
         print("4 - Remover")
         print("0 - Voltar")
+
         escolha = input("Escolha uma opção: ").strip()
 
         if escolha == "0":
             return
 
         acao = opcoes.get(escolha)
+
         if acao is None:
             print("Opção inválida.")
             continue
+
         acao()
 
 
 def adicionar_disciplina():
     nome = input("Nome da disciplina: ").strip()
     professor = input("Professor (opcional): ").strip()
-    item = disp.adicionar(nome, professor=professor or None)
-    print("Disciplina adicionada:", item)
+
+    disciplina, erros = dominio.adicionar_disciplina(
+        nome,
+        professor,
+    )
+
+    if erros:
+        _mostrar_erros(erros)
+        return
+
+    print("Disciplina adicionada:", disciplina)
 
 
 def listar_disciplinas():
-    disciplinas = disp.listar()
+    disciplinas = dominio.listar_disciplinas()
+
     if not disciplinas:
         print("Nenhuma disciplina cadastrada.")
         return
-    for d in disciplinas:
-        print(d)
+
+    for disciplina in disciplinas:
+        print(disciplina)
 
 
 def atualizar_disciplina():
-    id_texto = input("ID da disciplina: ").strip()
-    if not id_texto.isdigit():
-        print("ID inválido.")
+    disciplina_id = _ler_id("ID da disciplina: ")
+
+    if disciplina_id is None:
         return
 
-    nome = input("Novo nome (deixe vazio para manter): ").strip()
-    campos = {}
-    if nome:
-        campos["nome"] = nome
+    nome = input("Novo nome (Enter mantém): ").strip()
 
-    item = disp.atualizar(int(id_texto), **campos)
-    if item is None:
-        print("Disciplina não encontrada.")
-    else:
-        print("Disciplina atualizada:", item)
+    disciplina, erros = dominio.atualizar_disciplina(
+        disciplina_id,
+        nome=nome if nome else None,
+    )
+
+    if erros:
+        _mostrar_erros(erros)
+        return
+
+    print("Disciplina atualizada:", disciplina)
 
 
 def remover_disciplina():
-    id_texto = input("ID da disciplina: ").strip()
-    if not id_texto.isdigit():
-        print("ID inválido.")
+    disciplina_id = _ler_id("ID da disciplina: ")
+
+    if disciplina_id is None:
         return
 
-    sucesso = disp.remover(int(id_texto))
-    print("Disciplina removida." if sucesso else "Disciplina não encontrada.")
+    sucesso, erros = dominio.remover_disciplina(disciplina_id)
+
+    if erros:
+        _mostrar_erros(erros)
+        return
+
+    if sucesso:
+        print("Disciplina removida.")
