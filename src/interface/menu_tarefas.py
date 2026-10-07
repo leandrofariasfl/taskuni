@@ -23,17 +23,20 @@ def menu_tarefas():
     }
 
     while True:
-        print("\n--- Tarefas ---")
+        print("\n------------------------")
+        print("         TAREFAS")
+        print("------------------------\n")
+
         print("1 - Adicionar")
         print("2 - Listar")
         print("3 - Prioridades")
-        print("4 - Alertas (atrasadas e próximas)")
+        print("4 - Alertas")
         print("5 - Editar")
         print("6 - Concluir")
         print("7 - Reabrir")
         print("0 - Voltar")
 
-        escolha = input("Escolha uma opção: ").strip()
+        escolha = input("\nEscolha uma opção: ").strip()
 
         if escolha == "0":
             return
@@ -41,14 +44,13 @@ def menu_tarefas():
         acao = opcoes.get(escolha)
 
         if acao is None:
-            print("Opção inválida.")
+            print("\n[ERRO] Opção inválida.")
             continue
 
         acao()
 
 
 def _converter_id(texto):
-    """Converte o texto em ID inteiro positivo."""
     try:
         numero = int(texto)
     except ValueError:
@@ -64,13 +66,12 @@ def _ler_id(pergunta):
     id_lido = _converter_id(input(pergunta).strip())
 
     if id_lido is None:
-        print("ID inválido.")
+        print("[ERRO] ID inválido.")
 
     return id_lido
 
 
 def _escolher(pergunta, opcoes):
-    """Mostra opções numeradas e devolve a opção escolhida."""
     print(pergunta)
 
     for numero, opcao in enumerate(opcoes, start=1):
@@ -84,12 +85,12 @@ def _escolher(pergunta, opcoes):
     if texto.isdigit() and 1 <= int(texto) <= len(opcoes):
         return opcoes[int(texto) - 1]
 
-    print("Opção inválida.")
+    print("[ERRO] Opção inválida.")
     return None
 
 
 def _mostrar_erros(erros):
-    print("Não foi possível concluir a operação:")
+    print("[ERRO] Não foi possível concluir a operação:")
 
     for erro in erros:
         print(" -", erro)
@@ -107,15 +108,15 @@ def _nome_disciplina(disciplina_id, disciplinas):
         if disciplina["id"] == disciplina_id:
             return disciplina["nome"]
 
-    return "disciplina desconhecida"
+    return "Disciplina desconhecida"
 
 
 def _formatar(tarefa, disciplinas):
     if tarefa.get("tipo") == "pessoal":
-        origem = "pessoal"
+        origem = "Pessoal"
 
     elif tarefa.get("disciplina_id") is None:
-        origem = "acadêmica"
+        origem = "Acadêmica"
 
     else:
         origem = _nome_disciplina(
@@ -124,21 +125,21 @@ def _formatar(tarefa, disciplinas):
         )
 
     texto = (
-        f"[{tarefa.get('id', '?')}] {tarefa.get('titulo', '?')} | "
+        f"[{tarefa.get('id', '?')}] "
+        f"{tarefa.get('titulo', '?')} | "
         f"{origem} | "
-        f"prazo {tarefa.get('prazo', '?')} | "
-        f"importância {tarefa.get('importancia', '?')} | "
-        f"{tarefa.get('status', '?')}"
+        f"Prazo: {tarefa.get('prazo', '?')} | "
+        f"Importância: {tarefa.get('importancia', '?')} | "
+        f"Status: {tarefa.get('status', '?')}"
     )
 
     if prioridade.esta_atrasada(tarefa):
-        texto += "  ** ATRASADA **"
+        texto += " | ATRASADA"
 
     return texto
 
 
 def _pedir_tarefa():
-    """Pergunta o ID e devolve a tarefa correspondente."""
     id_tarefa = _ler_id("ID da tarefa: ")
 
     if id_tarefa is None:
@@ -147,7 +148,7 @@ def _pedir_tarefa():
     tarefa = dominio.buscar_tarefa(id_tarefa)
 
     if tarefa is None:
-        print("Tarefa não encontrada.")
+        print("[ERRO] Tarefa não encontrada.")
 
     return tarefa
 
@@ -164,7 +165,7 @@ def adicionar_tarefa():
     )
 
     if tipo is None:
-        print("Cadastro cancelado.")
+        print("[AVISO] Cadastro cancelado.")
         return
 
     disciplina_id = None
@@ -179,7 +180,7 @@ def adicionar_tarefa():
             )
 
             if vincular is None:
-                print("Cadastro cancelado.")
+                print("[AVISO] Cadastro cancelado.")
                 return
 
             if vincular == "sim":
@@ -190,7 +191,7 @@ def adicionar_tarefa():
 
         else:
             print(
-                "Nenhuma disciplina cadastrada. "
+                "[AVISO] Nenhuma disciplina cadastrada. "
                 "A tarefa será criada sem disciplina."
             )
 
@@ -202,7 +203,7 @@ def adicionar_tarefa():
     )
 
     if importancia is None:
-        print("Cadastro cancelado.")
+        print("[AVISO] Cadastro cancelado.")
         return
 
     tarefa, erros = dominio.criar_tarefa(
@@ -221,17 +222,15 @@ def adicionar_tarefa():
 
     salva = dominio.salvar_nova(tarefa)
 
-    print(
-        "Tarefa adicionada:",
-        _formatar(salva, disciplinas),
-    )
+    print("[OK] Tarefa adicionada com sucesso.")
+    print(_formatar(salva, disciplinas))
 
 
 def listar_tarefas():
     tarefas = dominio.listar_todas()
 
     if not tarefas:
-        print("Nenhuma tarefa cadastrada.")
+        print("[AVISO] Nenhuma tarefa cadastrada.")
         return
 
     filtro = _escolher(
@@ -250,7 +249,7 @@ def listar_tarefas():
     )
 
     if not encontradas:
-        print("Nenhuma tarefa encontrada com esse filtro.")
+        print("[AVISO] Nenhuma tarefa encontrada com esse filtro.")
         return
 
     disciplinas = dominio.listar_disciplinas()
@@ -265,7 +264,7 @@ def mostrar_prioridades():
     itens = prioridade.ordenar_por_prioridade(tarefas)
 
     if not itens:
-        print("Nenhuma tarefa pendente.")
+        print("[AVISO] Nenhuma tarefa pendente.")
         return
 
     disciplinas = dominio.listar_disciplinas()
@@ -292,7 +291,7 @@ def mostrar_alertas():
         for tarefa in dominio.ordenar_por_prazo(atrasadas):
             print(" ", _formatar(tarefa, disciplinas))
     else:
-        print("  Nenhuma.")
+        print("  [AVISO] Nenhuma.")
 
     print("\nTarefas próximas (hoje até 7 dias):")
 
@@ -300,7 +299,7 @@ def mostrar_alertas():
         for tarefa in dominio.ordenar_por_prazo(proximas):
             print(" ", _formatar(tarefa, disciplinas))
     else:
-        print("  Nenhuma.")
+        print("  [AVISO] Nenhuma.")
 
 
 def editar_tarefa():
@@ -364,16 +363,16 @@ def editar_tarefa():
                 novo_id = _converter_id(texto_id)
 
                 if novo_id is None:
-                    print("ID inválido.")
+                    print("[ERRO] ID inválido.")
                     return
 
                 alteracoes["disciplina_id"] = novo_id
 
         else:
-            print("Nenhuma disciplina cadastrada.")
+            print("[AVISO] Nenhuma disciplina cadastrada.")
 
     if not alteracoes:
-        print("Nada foi alterado.")
+        print("[AVISO] Nada foi alterado.")
         return
 
     campos, erros = dominio.editar_tarefa(
@@ -391,10 +390,8 @@ def editar_tarefa():
         campos,
     )
 
-    print(
-        "Tarefa atualizada:",
-        _formatar(atualizada, disciplinas),
-    )
+    print("[OK] Tarefa atualizada com sucesso.")
+    print(_formatar(atualizada, disciplinas))
 
 
 def _mudar_status(novo_status, mensagem_sucesso):
@@ -419,21 +416,19 @@ def _mudar_status(novo_status, mensagem_sucesso):
 
     disciplinas = dominio.listar_disciplinas()
 
-    print(
-        mensagem_sucesso,
-        _formatar(atualizada, disciplinas),
-    )
+    print(mensagem_sucesso)
+    print(_formatar(atualizada, disciplinas))
 
 
 def concluir_tarefa():
     _mudar_status(
         "concluida",
-        "Tarefa concluída:",
+        "[OK] Tarefa concluída com sucesso.",
     )
 
 
 def reabrir_tarefa():
     _mudar_status(
         "pendente",
-        "Tarefa reaberta:",
+        "[OK] Tarefa reaberta com sucesso.",
     )

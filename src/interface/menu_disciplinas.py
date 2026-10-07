@@ -7,13 +7,15 @@ def _ler_id(pergunta):
     texto = input(pergunta).strip()
 
     if not texto.isdigit():
-        print("ID inválido.")
+        print("[ERRO] ID inválido.")
         return None
 
     return int(texto)
 
 
 def _mostrar_erros(erros):
+    print("[ERRO] Não foi possível concluir a operação:")
+
     for erro in erros:
         print(" -", erro)
 
@@ -27,14 +29,17 @@ def menu_disciplinas():
     }
 
     while True:
-        print("\n--- Disciplinas ---")
+        print("\n------------------------")
+        print("      DISCIPLINAS")
+        print("------------------------\n")
+
         print("1 - Adicionar")
         print("2 - Listar")
         print("3 - Atualizar")
         print("4 - Remover")
         print("0 - Voltar")
 
-        escolha = input("Escolha uma opção: ").strip()
+        escolha = input("\nEscolha uma opção: ").strip()
 
         if escolha == "0":
             return
@@ -42,7 +47,7 @@ def menu_disciplinas():
         acao = opcoes.get(escolha)
 
         if acao is None:
-            print("Opção inválida.")
+            print("\n[ERRO] Opção inválida.")
             continue
 
         acao()
@@ -61,18 +66,24 @@ def adicionar_disciplina():
         _mostrar_erros(erros)
         return
 
-    print("Disciplina adicionada:", disciplina)
+    print("[OK] Disciplina adicionada com sucesso.")
 
 
 def listar_disciplinas():
     disciplinas = dominio.listar_disciplinas()
 
     if not disciplinas:
-        print("Nenhuma disciplina cadastrada.")
+        print("[AVISO] Nenhuma disciplina cadastrada.")
         return
 
     for disciplina in disciplinas:
-        print(disciplina)
+        professor = disciplina.get("professor") or "Não informado"
+
+        print(
+            f"[{disciplina['id']}] "
+            f"{disciplina['nome']} | "
+            f"Professor: {professor}"
+        )
 
 
 def atualizar_disciplina():
@@ -92,7 +103,7 @@ def atualizar_disciplina():
         _mostrar_erros(erros)
         return
 
-    print("Disciplina atualizada:", disciplina)
+    print("[OK] Disciplina atualizada com sucesso.")
 
 
 def remover_disciplina():
@@ -108,4 +119,4 @@ def remover_disciplina():
         return
 
     if sucesso:
-        print("Disciplina removida.")
+        print("[OK] Disciplina removida com sucesso.")

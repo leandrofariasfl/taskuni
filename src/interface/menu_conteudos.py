@@ -1,19 +1,22 @@
 """Interface de terminal para conteúdos."""
 
 from ..academico import conteudos as dominio
+from ..academico import disciplinas as dominio_disciplinas
 
 
 def _ler_id(pergunta):
     texto = input(pergunta).strip()
 
     if not texto.isdigit():
-        print("ID inválido.")
+        print("[ERRO] ID inválido.")
         return None
 
     return int(texto)
 
 
 def _mostrar_erros(erros):
+    print("[ERRO] Não foi possível concluir a operação:")
+
     for erro in erros:
         print(" -", erro)
 
@@ -27,14 +30,17 @@ def menu_conteudos():
     }
 
     while True:
-        print("\n--- Conteúdos ---")
+        print("\n------------------------")
+        print("        CONTEÚDOS")
+        print("------------------------\n")
+
         print("1 - Adicionar")
         print("2 - Listar")
         print("3 - Atualizar")
         print("4 - Remover")
         print("0 - Voltar")
 
-        escolha = input("Escolha uma opção: ").strip()
+        escolha = input("\nEscolha uma opção: ").strip()
 
         if escolha == "0":
             return
@@ -42,7 +48,7 @@ def menu_conteudos():
         acao = opcoes.get(escolha)
 
         if acao is None:
-            print("Opção inválida.")
+            print("\n[ERRO] Opção inválida.")
             continue
 
         acao()
@@ -65,18 +71,26 @@ def adicionar_conteudo():
         _mostrar_erros(erros)
         return
 
-    print("Conteúdo adicionado:", conteudo)
+    print("[OK] Conteúdo adicionado com sucesso.")
 
 
 def listar_conteudos():
     conteudos = dominio.listar_conteudos()
 
     if not conteudos:
-        print("Nenhum conteúdo cadastrado.")
+        print("[AVISO] Nenhum conteúdo cadastrado.")
         return
 
     for conteudo in conteudos:
-        print(conteudo)
+        nome_disciplina = _nome_disciplina(
+            conteudo["disciplina_id"]
+        )
+
+        print(
+            f"[{conteudo['id']}] "
+            f"{conteudo['titulo']} | "
+            f"Disciplina: {nome_disciplina}"
+        )
 
 
 def atualizar_conteudo():
@@ -96,7 +110,7 @@ def atualizar_conteudo():
         _mostrar_erros(erros)
         return
 
-    print("Conteúdo atualizado:", conteudo)
+    print("[OK] Conteúdo atualizado com sucesso.")
 
 
 def remover_conteudo():
@@ -112,4 +126,12 @@ def remover_conteudo():
         return
 
     if sucesso:
-        print("Conteúdo removido.")
+        print("[OK] Conteúdo removido com sucesso.")
+
+def _nome_disciplina(disciplina_id):
+    disciplina = dominio_disciplinas.buscar_disciplina(disciplina_id)
+
+    if disciplina is None:
+        return "Disciplina desconhecida"
+
+    return disciplina["nome"]
