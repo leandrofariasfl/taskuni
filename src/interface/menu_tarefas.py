@@ -1,8 +1,8 @@
 """Menu de tarefas: entradas, mensagens e ligação entre domínio e persistência."""
-from .academico import prioridade_tarefas as prioridade
-from .academico import tarefas as dominio
-from .persistencia import disciplinas as repo_disciplinas
-from .persistencia import tarefas as repo_tarefas
+from ..sistema import analise_tarefas as prioridade
+from ..academico import tarefas as dominio
+from ..persistencia import disciplinas as repo_disciplinas
+from ..persistencia import tarefas as repo_tarefas
 
 ROTULOS_FAIXA = {
     "alta": "ALTA atenção",

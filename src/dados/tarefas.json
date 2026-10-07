@@ -1,0 +1,22 @@
+[
+    {
+        "id": 1,
+        "titulo": "Estudar português",
+        "descricao": "1h de estudo",
+        "tipo": "pessoal",
+        "disciplina_id": null,
+        "prazo": "2026-10-21",
+        "importancia": "baixa",
+        "status": "pendente"
+    },
+    {
+        "id": 2,
+        "titulo": "RLm",
+        "descricao": "Estudar 1h",
+        "tipo": "pessoal",
+        "disciplina_id": null,
+        "prazo": "2026-10-06",
+        "importancia": "baixa",
+        "status": "pendente"
+    }
+]

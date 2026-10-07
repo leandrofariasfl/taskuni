@@ -4,9 +4,10 @@ Prioridade = pontos de importância + pontos de urgência (PROJECT_CONTEXT.md, s
 Nada é salvo: tudo é calculado a partir dos dados. O parâmetro `hoje` existe
 para testes; quando omitido, usa a data do computador.
 """
+
 from datetime import date
 
-from .tarefas import texto_para_data
+from ..academico.tarefas import texto_para_data
 
 PONTOS_IMPORTANCIA = {"baixa": 1, "media": 2, "alta": 3}
 DIAS_PROXIMA = 7
