@@ -78,10 +78,11 @@ def validar_tarefa(tarefa, disciplinas):
         if disciplina_id is not None:
             erros.append("Tarefa pessoal não pode ter disciplina.")
     else:
-        if not _id_valido(disciplina_id):
-            erros.append("Tarefa acadêmica precisa de um ID de disciplina válido.")
-        elif not _disciplina_existe(disciplina_id, disciplinas):
-            erros.append(f"A disciplina {disciplina_id} não existe.")
+        if disciplina_id is not None:
+            if not _id_valido(disciplina_id):
+                erros.append("ID de disciplina inválido.")
+            elif not _disciplina_existe(disciplina_id, disciplinas):
+                erros.append(f"A disciplina {disciplina_id} não existe.")
 
     if texto_para_data(tarefa.get("prazo")) is None:
         erros.append("Prazo inválido. Use o formato AAAA-MM-DD (ex.: 2026-10-05).")

@@ -1,3 +1,5 @@
+from ..academico import disciplinas as dis
+from ..persistencia import disciplinas as disp
 
 def menu_disciplinas():
     opcoes = {

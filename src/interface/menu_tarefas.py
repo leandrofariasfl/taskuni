@@ -95,8 +95,10 @@ def _nome_disciplina(disciplina_id, disciplinas):
 
 
 def _formatar(tarefa, disciplinas):
-    if tarefa.get("disciplina_id") is None:
+    if tarefa.get("tipo") == "pessoal":
         origem = "pessoal"
+    elif tarefa.get("disciplina_id") is None:
+        origem = "acadêmica"
     else:
         origem = _nome_disciplina(tarefa["disciplina_id"], disciplinas)
 
@@ -135,14 +137,24 @@ def adicionar_tarefa():
 
     disciplina_id = None
     if tipo == "academica":
-        if not disciplinas:
-            print("Nenhuma disciplina cadastrada. "
-                  "Cadastre uma disciplina antes ou crie uma tarefa pessoal.")
-            return
-        _mostrar_disciplinas(disciplinas)
-        disciplina_id = _ler_id("ID da disciplina: ")
-        if disciplina_id is None:
-            return
+        if disciplinas:
+            _mostrar_disciplinas(disciplinas)
+            
+            vincular = _escolher(
+            "Deseja vincular a tarefa a uma disciplina?",
+            ("sim", "nao"),
+            )
+
+            if vincular is None:
+                print("Cadastro cancelado.")
+                return
+
+            if vincular == "sim":
+                disciplina_id = _ler_id("ID da disciplina: ")
+                if disciplina_id is None:
+                    return
+        else:
+            print("Nenhuma disciplina cadastrada. A tarefa será criada sem disciplina.")
 
     prazo = input("Prazo (AAAA-MM-DD): ").strip()
 
@@ -245,16 +257,33 @@ def editar_tarefa():
     if importancia is not None:
         alteracoes["importancia"] = importancia
 
-    # o menu não altera o tipo; só tarefa acadêmica tem disciplina
     if tarefa.get("tipo") == "academica":
-        _mostrar_disciplinas(disciplinas)
-        texto_id = input(f"ID da disciplina [{tarefa.get('disciplina_id')}]: ").strip()
-        if texto_id:
-            novo_id = _converter_id(texto_id)
-            if novo_id is None:
-                print("ID inválido.")
-                return
-            alteracoes["disciplina_id"] = novo_id
+        if disciplinas:
+            _mostrar_disciplinas(disciplinas)
+
+            print("Disciplina:")
+            print("  Enter - manter atual")
+            print("  0 - remover vínculo")
+            print("  ID - vincular/trocar disciplina")
+
+            texto_id = input(
+                f"Disciplina atual [{tarefa.get('disciplina_id')}]: "
+            ).strip()
+
+            if texto_id == "0":
+                alteracoes["disciplina_id"] = None
+
+            elif texto_id:
+                novo_id = _converter_id(texto_id)
+
+                if novo_id is None:
+                    print("ID inválido.")
+                    return
+
+                alteracoes["disciplina_id"] = novo_id
+
+        else:
+            print("Nenhuma disciplina cadastrada.")
 
     if not alteracoes:
         print("Nada foi alterado.")

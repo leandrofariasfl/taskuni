@@ -18,5 +18,25 @@
         "prazo": "2026-10-06",
         "importancia": "baixa",
         "status": "pendente"
+    },
+    {
+        "id": 3,
+        "titulo": "Redes introdução",
+        "descricao": "1h",
+        "tipo": "academica",
+        "disciplina_id": 1,
+        "prazo": "2026-10-07",
+        "importancia": "media",
+        "status": "pendente"
+    },
+    {
+        "id": 4,
+        "titulo": "Redes meio",
+        "descricao": "1h",
+        "tipo": "academica",
+        "disciplina_id": null,
+        "prazo": "2026-10-07",
+        "importancia": "baixa",
+        "status": "pendente"
     }
 ]
