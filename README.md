@@ -1,93 +1,313 @@
 # TASKUNI
 
-Sistema de Gestão Acadêmica e Estudos Gamificados desenvolvido para a disciplina de Laboratório de Programação.
+Sistema acadêmico desenvolvido em Python para auxiliar estudantes na organização de disciplinas, conteúdos, tarefas e estudos.
 
-O sistema será executado pelo terminal e permitirá organizar disciplinas, conteúdos, tarefas, avaliações, sessões de estudo e metas. A partir dos dados cadastrados, também produzirá análises determinísticas, estatísticas de estudo, XP, nível e um dashboard acadêmico.
+O projeto está sendo desenvolvido como atividade da disciplina de **Laboratório de Programação**, utilizando programação estruturada e organização modular.
 
-## Estado atual
+## Funcionalidades atuais
 
-O projeto está na fase de preparação da estrutura base. Os módulos Python ainda não possuem funcionalidades implementadas.
+O sistema possui, atualmente:
 
-## Requisitos
+### Disciplinas
+- cadastrar disciplina;
+- listar disciplinas;
+- atualizar disciplina;
+- remover disciplina.
 
-- Python 3.10 ou superior;
-- nenhuma dependência externa para o MVP.
+### Conteúdos
+- cadastrar conteúdos vinculados a disciplinas;
+- listar conteúdos;
+- atualizar conteúdos;
+- remover conteúdos.
 
-As bibliotecas necessárias pertencem à biblioteca padrão do Python. O arquivo `requirements.txt` existe para deixar essa decisão explícita e permitir futuras alterações controladas.
+### Tarefas
+- cadastrar tarefas acadêmicas ou pessoais;
+- vincular opcionalmente tarefas acadêmicas a disciplinas;
+- listar tarefas;
+- filtrar por status;
+- editar tarefas;
+- concluir tarefas;
+- reabrir tarefas;
+- calcular prioridade;
+- identificar tarefas atrasadas;
+- identificar tarefas próximas do prazo.
 
-## Estrutura
+## Organização do projeto
 
 ```text
 TASKUNI/
+│
 ├── main.py
-├── disciplinas.py
-├── conteudos.py
-├── tarefas.py
-├── avaliacoes.py
-├── estudos.py
-├── gamificacao.py
-├── analise.py
-├── dashboard.py
-├── persistencia.py
-├── validacoes.py
-├── data/
-│   └── taskuni.json
+│
+├── src/
+│   ├── academico/
+│   │   ├── disciplinas.py
+│   │   ├── conteudos.py
+│   │   ├── tarefas.py
+│   │   └── avaliacoes.py
+│   │
+│   ├── estudos/
+│   │   ├── sessoes.py
+│   │   ├── metas.py
+│   │   └── gamificacao.py
+│   │
+│   ├── interface/
+│   │   ├── menu_principal.py
+│   │   ├── menu_disciplinas.py
+│   │   ├── menu_conteudos.py
+│   │   └── menu_tarefas.py
+│   │
+│   ├── persistencia/
+│   │   ├── _armazenamento.py
+│   │   ├── disciplinas.py
+│   │   ├── conteudos.py
+│   │   ├── tarefas.py
+│   │   ├── avaliacoes.py
+│   │   ├── sessoes_estudo.py
+│   │   └── metas.py
+│   │
+│   └── sistema/
+│       ├── analise_tarefas.py
+│       └── validacoes.py
+│
+├── tests/
 ├── docs/
-│   ├── PROJECT_CONTEXT.md
-│   ├── TEAM_WORKFLOW.md
-│   └── MANUAL_TESTS.md
 ├── requirements.txt
-├── .gitignore
-├── LICENSE
 └── README.md
 ```
 
-## Documentação oficial
+## Responsabilidade das camadas
 
-- `docs/PROJECT_CONTEXT.md`: escopo, modelo de dados e contratos;
-- `docs/TEAM_WORKFLOW.md`: branches, integração e revisão;
-- `docs/MANUAL_TESTS.md`: registro dos testes manuais.
+O projeto foi dividido em módulos para evitar concentração de lógica em um único arquivo.
 
-Antes de implementar uma funcionalidade, a equipe deve consultar esses documentos. Alterações em campos, tipos, relacionamentos ou valores permitidos precisam ser documentadas e aprovadas antes da implementação.
+### `main.py`
+
+É o ponto de entrada da aplicação.
+
+Sua responsabilidade é apenas iniciar o sistema e chamar o menu principal.
+
+### `src/interface`
+
+Responsável pela interação com o usuário no terminal.
+
+Contém:
+
+- menus;
+- `input()`;
+- `print()`;
+- leitura das opções escolhidas pelo usuário;
+- apresentação dos resultados.
+
+A interface não deve implementar regras de negócio nem acessar arquivos JSON diretamente.
+
+### `src/academico`
+
+Contém as regras relacionadas à parte acadêmica do sistema.
+
+Exemplos:
+
+- validação de disciplinas;
+- validação de conteúdos;
+- criação e edição de tarefas;
+- regras de status;
+- filtros e consultas relacionadas às tarefas.
+
+### `src/estudos`
+
+Responsável pelas funcionalidades relacionadas ao estudo do usuário.
+
+Exemplos previstos:
+
+- sessões de estudo;
+- metas;
+- gamificação.
+
+### `src/persistencia`
+
+Responsável pelo armazenamento e recuperação dos dados.
+
+Os módulos dessa pasta realizam operações como:
+
+- adicionar;
+- buscar;
+- listar;
+- atualizar;
+- remover;
+- salvar.
+
+O módulo `_armazenamento.py` concentra operações comuns de leitura e escrita dos arquivos JSON.
+
+### `src/sistema`
+
+Contém funcionalidades compartilhadas ou de análise que não pertencem diretamente à interface ou à persistência.
+
+Atualmente inclui a análise das tarefas, como:
+
+- cálculo de prioridade;
+- cálculo de urgência;
+- identificação de tarefas atrasadas;
+- identificação de tarefas próximas do prazo.
+
+## Fluxo da aplicação
+
+De forma geral, o sistema segue o fluxo:
+
+```text
+Usuário
+   ↓
+Interface
+   ↓
+Domínio
+   ↓
+Persistência
+   ↓
+Arquivos JSON
+```
+
+Exemplo para tarefas:
+
+```text
+menu_tarefas.py
+        ↓
+academico/tarefas.py
+        ↓
+persistencia/tarefas.py
+        ↓
+persistencia/_armazenamento.py
+        ↓
+tarefas.json
+```
+
+As análises de prioridade e prazo ficam separadas em:
+
+```text
+sistema/analise_tarefas.py
+```
 
 ## Persistência
 
-Os dados são armazenados em arquivos JSON separados por entidade, na pasta `src/dados/`:
+Os dados são armazenados em arquivos JSON.
 
-- `disciplinas.json`
-- `conteudos.json`
-- `tarefas.json`
-- `avaliacoes.json`
-- `sessoes_estudo.json`
-- `metas.json`
+Cada tipo de informação possui sua própria coleção, como:
 
-A responsabilidade fica no pacote `src/persistencia/`:
+```text
+disciplinas.json
+conteudos.json
+tarefas.json
+avaliacoes.json
+metas.json
+sessoes_estudo.json
+```
 
-- `_armazenamento.py`: única parte que abre e grava arquivos. Oferece `carregar`, `gravar` e `proximo_id`. A gravação é atômica (arquivo temporário + `os.replace`). Se um arquivo estiver corrompido, ele é renomeado para `<nome>.corrompido.json` e a coleção começa vazia.
-- Um módulo por entidade (`disciplinas.py`, `conteudos.py`, `tarefas.py`, `avaliacoes.py`, `sessoes_estudo.py`, `metas.py`), cada um com `adicionar`, `listar`, `buscar`, `atualizar`, `remover` e `salvar`.
+Esses arquivos são gerados durante a execução do sistema e não precisam ser versionados no Git.
 
-Regras desta camada:
+## Executando o projeto
 
-- cada módulo manipula somente os próprios dados;
-- não há validação de relacionamentos entre entidades (por exemplo, se um `disciplina_id` existe); essa verificação pertence à camada de domínio;
-- o arquivo é salvo automaticamente após cada inclusão, alteração ou remoção;
-- informações calculadas, como média, tempo total, XP, nível e quantidade de tarefas atrasadas, não são armazenadas.
-
-## Execução
-
-Quando o ponto de entrada estiver implementado, o programa será iniciado com:
+Na raiz do projeto, execute:
 
 ```bash
 python main.py
 ```
 
-Na fase atual, `main.py` é apenas um arquivo estrutural e ainda não inicia o sistema.
+O menu principal será exibido:
 
-## Desenvolvimento
+```text
+=== TASKUNI ===
+1 - Disciplinas
+2 - Conteúdos
+3 - Tarefas
+0 - Sair
+```
 
-- `main`: versão estável;
-- `develop`: integração das funcionalidades;
-- `feature/*`: desenvolvimento de cada funcionalidade;
-- `setup/project-base`: preparação inicial do repositório.
+## Tecnologias utilizadas
 
-O projeto utiliza programação procedural com funções, listas, dicionários e módulos. Orientação a objetos, banco de dados, interface gráfica, API e inteligência artificial estão fora do escopo do MVP.
+- Python
+- JSON
+- Git
+- GitHub
+
+O projeto utiliza apenas recursos compatíveis com os conteúdos estudados na disciplina, priorizando uma implementação simples e compreensível.
+
+## Desenvolvimento colaborativo
+
+A branch utilizada para integração durante o desenvolvimento é:
+
+```text
+develop
+```
+
+A branch:
+
+```text
+main
+```
+
+é reservada para a versão estável/final do projeto.
+
+Antes de iniciar uma nova funcionalidade:
+
+```bash
+git switch develop
+git pull origin develop
+git switch -c feature/nome-da-funcionalidade
+```
+
+Após concluir a funcionalidade, ela deve ser integrada novamente à `develop`.
+
+## Padrão de branches
+
+Exemplos:
+
+```text
+feature/avaliacoes
+feature/metas
+feature/gamificacao
+feature/dashboard
+```
+
+## Padrão de commits
+
+O projeto utiliza commits descritivos, como:
+
+```text
+feat: adiciona cadastro de tarefas
+fix: corrige validacao de prazo
+refactor: organiza camada de interface
+test: adiciona testes de tarefas
+docs: atualiza documentacao do projeto
+chore: atualiza configuracoes do repositorio
+```
+
+## Regras importantes para colaboração
+
+Ao desenvolver novas funcionalidades:
+
+- não colocar lógica de negócio dentro dos menus;
+- não manipular arquivos JSON diretamente fora da camada de persistência;
+- evitar alterar arquivos de outras funcionalidades sem necessidade;
+- atualizar a `develop` antes de criar uma nova branch;
+- testar a funcionalidade antes de enviar;
+- evitar commits diretamente na `main`;
+- manter as responsabilidades dos módulos existentes.
+
+## Status do projeto
+
+Em desenvolvimento.
+
+Funcionalidades já integradas:
+
+- disciplinas;
+- conteúdos;
+- tarefas;
+- persistência em JSON;
+- prioridade de tarefas;
+- alertas de atraso e proximidade de prazo.
+
+Funcionalidades ainda em desenvolvimento podem incluir:
+
+- avaliações;
+- sessões de estudo;
+- metas;
+- gamificação;
+- análises adicionais;
+- dashboard.
