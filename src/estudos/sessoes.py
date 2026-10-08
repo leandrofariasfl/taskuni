@@ -9,10 +9,6 @@ from ..persistencia import disciplinas as repo_disciplinas
 TIPOS = ("academica", "pessoal")
 
 
-def _texto_preenchido(valor):
-    return isinstance(valor, str) and valor.strip() != ""
-
-
 def _id_valido(valor):
     return (
         isinstance(valor, int)
